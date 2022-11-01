@@ -1,14 +1,23 @@
-import React, { useState } from 'react' 
+import React, { useEffect, useState } from 'react' 
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 
 const Home = () => {
+
+  const booksave = () => {
+    return JSON.parse(localStorage.getItem("items")) ?? [];
+  };
        
+  const navigate = useNavigate()
 
 
     const [bookName, setBookName] = useState("")
-    // console.log(bookName)
-const [items, setItems] = useState([])
+  
+const [items, setItems] = useState(booksave())
+
+
+
     const url = `https://www.googleapis.com/books/v1/volumes?q=%27${bookName}%27&key=AIzaSyA6SaT23KNiiA6DnUfUQTvFeyAcQEkwnSU&maxResults=25`
 
     const ApiGel =async()=>{
@@ -38,6 +47,16 @@ setBookName("")
 
         } 
 
+
+
+
+        
+         useEffect(() => {
+           localStorage.setItem("items", JSON.stringify(items));
+         }, [items]);
+    
+      
+
         
 
 
@@ -58,7 +77,7 @@ setBookName("")
                     items.map((item,index)=>{
                         return (
                             item?.volumeInfo?.imageLinks ?
-                              (<div key={index} className="cardd">
+                              (<div onClick={()=>navigate("/modal",{state:item} )} key={index} className="cardd">
                                 <img
                                   src={
             
